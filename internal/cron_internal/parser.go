@@ -1,4 +1,4 @@
-package cron
+package cron_internal
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ type ValidationError struct {
 }
 
 func (e *ValidationError) Error() string {
-	return fmt.Sprintf("cron validation error in %s: %s", e.Field, e.Message)
+	return fmt.Sprintf("cron_internal validation error in %s: %s", e.Field, e.Message)
 }
 
 type Expression struct {

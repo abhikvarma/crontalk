@@ -1,4 +1,4 @@
-package cron
+package cron_internal
 
 import (
 	"errors"
