@@ -29,6 +29,7 @@ func TestParseCron(t *testing.T) {
 		{"Invalid W usage", "0 5 32W * *", true, "day of month", "invalid weekday value"},
 		{"Valid with #", "0 5 * * 2#1", false, "", ""},
 		{"Invalid # usage", "0 5 * * 8#1", true, "day of week", "invalid nth weekday of month"},
+		{"Valid with range and list", "*/15 8-10,15-18 * * 1", false, "", ""},
 	}
 
 	for _, tt := range tests {

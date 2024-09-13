@@ -9,6 +9,21 @@ import (
 	"os"
 )
 
+func EnableCORS(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	}
+}
+
 func main() {
 	cfg, err := config.Load()
 	if err != nil {
@@ -28,7 +43,7 @@ func main() {
 	anthropicService := anthropic.NewService(cfg.AnthropicApiKey, cfg.AnthropicModel)
 	handler := api.NewHandler(anthropicService)
 
-	http.HandleFunc("/v1/cron", handler.HandleCronRequest)
+	http.HandleFunc("/v1/cron", EnableCORS(handler.HandleCronRequest))
 
 	log.Printf("Starting server on :%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))

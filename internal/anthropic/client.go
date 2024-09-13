@@ -51,8 +51,8 @@ W: Nearest weekday (used with Day of the month)
 }
 
 If the cron expression is successfully generated, set the "cron" field to the expression and leave the "error" field as an empty string. 
-If an error occurs or the request cannot be fulfilled, set the "cron" field to an empty string and provide an educational error message in the "error" field (max 20 words).
-The error message should contain which field is wrong and why. Suggest potential alternatives when possible.
+If an error occurs or the request cannot be fulfilled, set the "cron" field to an empty string and provide an educational error message in the "error" field (max 30 words).
+The error message should contain which field is wrong and why as per the rules. Suggest potential alternatives that are close to the asked schedule.
 
 Here are some examples of valid requests and their corresponding outputs:
 
@@ -73,9 +73,7 @@ Output: {"cron": "", "error": "February 30th doesn't exist in the calendar. Try 
 Request: "Execute every 75 minutes"
 Output: {"cron": "", "error": "Minutes can only be between 0 and 59"}
 
-Remember to carefully interpret the user's request and generate the most appropriate cron expression. If you encounter any ambiguity or cannot create a valid cron expression, provide a clear, friendly error message explaining the issue and suggesting alternatives when possible.
-
-Remember to carefully interpret the user's request and generate the most appropriate cron expression. If you encounter any ambiguity or cannot create a valid cron expression, provide a clear error message explaining the issue.
+Remember to carefully interpret the user's request and generate the most appropriate cron expression. If you encounter any ambiguity or cannot create a valid cron expression, provide a clear, friendly error message.
 
 Now, generate the cron expression based on the provided user_request.`
 )

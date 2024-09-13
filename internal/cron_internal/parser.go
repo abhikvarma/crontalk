@@ -79,15 +79,15 @@ func validateField(field, value string, min, max int, names []string) error {
 		value = parts[1]
 	}
 
-	if strings.Contains(value, "-") {
-		return validateRange(field, value, min, max, names)
-	}
-
 	if strings.Contains(value, ",") {
 		if err := validateList(field, value, min, max, names); err != nil {
 			return &ValidationError{field, "invalid value in list"}
 		}
 		return nil
+	}
+
+	if strings.Contains(value, "-") {
+		return validateRange(field, value, min, max, names)
 	}
 
 	if value == "?" && (field == "day of month" || field == "day of week") {

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crontalk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #9f7aea;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border: 1px solid #4a5568;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #9f7aea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #805ad5;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(79, 209, 197, 0.1);
+            border-radius: 10px;
+            border: 1px solid #4fd1c5;
+        }
+        #cron-expression {
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        #next-run-times {
+            background-color: #2d3748;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>cron talk</h1>
+    <textarea id="cron-question" rows="4" placeholder="describe your schedule..."></textarea>
+    <button onclick="generateCron()">generate</button>
+    <div id="result" style="display: none;">
+        <div id="cron-expression"></div>
+        <div id="next-run-times"></div>
+    </div>
+</div>
+
+<script>
+    async function generateCron() {
+        const question = document.getElementById('cron-question').value;
+        const resultDiv = document.getElementById('result');
+        const cronExpressionDiv = document.getElementById('cron-expression');
+        const nextRunTimesDiv = document.getElementById('next-run-times');
+
+        try {
+            const response = await fetch('http://localhost:8080/v1/cron', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ cron_question: question }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.hasOwnProperty('error_message')) {
+                cronExpressionDiv.textContent = data.error_message;
+            } else {
+                cronExpressionDiv.textContent = data.cron_expression;
+                nextRunTimesDiv.innerHTML = '<strong>Next Run Times:</strong><br>' +
+                    data.next_run_times.join('<br>');
+            }
+
+            resultDiv.style.display = 'block';
+        } catch (error) {
+            console.error('Error:', error);
+            resultDiv.textContent = 'An error occurred while generating the cron expression.';
+            resultDiv.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>
